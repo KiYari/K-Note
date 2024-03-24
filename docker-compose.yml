@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:        
+  postgres:
+    image: 'postgres:14.2'
+    environment:
+      - 'POSTGRES_DB=notes'
+      - 'POSTGRES_PASSWORD=1'
+      - 'POSTGRES_USER=admin'
+    ports:
+      - '5432:5432'
+      
+  rabbitmq:
+    image: 'rabbitmq:latest'
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=1'
+      - 'RABBITMQ_DEFAULT_USER=admin'
+    ports:
+      - '5672:5672'
+      
+      
+  note:
+    image: 'note:latest'
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      POSTGRES_HOST: postgres
+      
+    ports:
+      - 3443:3443
+
+# Existing volumes
+volumes:
+  postgresql_data:
