@@ -15,7 +15,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class NoteService {
-    @Autowired
     private final NoteRepository noteRepository;
 
     public Note read(Long id) {
