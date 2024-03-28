@@ -45,7 +45,7 @@ public class Note extends BasicEntity {
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
     private Set<Note> relatedNotes;
-    @ManyToMany(mappedBy = "relatedLabels",
+    @ManyToMany(mappedBy = "relatedNotes",
             cascade = CascadeType.PERSIST)
     private Set<Label> relatedLabels = new HashSet<>();
 
