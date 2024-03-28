@@ -42,7 +42,9 @@ public class NoteService {
 
     public Note delete(Long id) {
         if(noteRepository.existsById(id)) {
-            noteRepository.delete(read(id));
+            Note note = read(id);
+            noteRepository.delete(note);
+            return note;
         }
         throw new DeleteEntityException("Could not delete note due to unexpected reasons.");
     }
