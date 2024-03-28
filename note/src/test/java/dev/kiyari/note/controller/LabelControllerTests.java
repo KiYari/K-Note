@@ -60,7 +60,7 @@ public class LabelControllerTests {
     }
 
     @Test
-    public void testGetAllLabels_ReturnsListOfLabels() throws Exception {
+    public void testGetAllLabels_ReturnsListOfLabels() {
         Set<Label> expectedLabels = new HashSet<>();
         expectedLabels.add(labels.get(0));
         expectedLabels.add(labels.get(1));

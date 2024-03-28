@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS label (
                                      id SERIAL PRIMARY KEY NOT NULL ,  -- Use SERIAL here
                                      title VARCHAR(255) NOT NULL,
-                                    description VARCHAR(255)
+                                    git description VARCHAR(255)
     );
 
 -- Create table for Note entity
