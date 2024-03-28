@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_label_table" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="label"/>
+            </not>
+        </preConditions>
+        <createTable tableName="label">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_note_table" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="note"/>
+            </not>
+        </preConditions>
+        <createTable tableName="note">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="note" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="timestamp"/>
+            <column name="last_updated" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_note_label_table" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="note_label"/>
+            </not>
+        </preConditions>
+        <createTable tableName="note_label">
+            <column name="note_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_primary_key_to_note_label" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="note_label"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey tableName="note_label" columnNames="note_id, label_id" constraintName="pk_note_label"/>
+    </changeSet>
+
+    <changeSet id="add_foreign_key_to_note_label_note" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_note_label_note" foreignKeyTableName="note_label"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint constraintName="fk_note_label_note"
+                                 baseTableName="note_label" baseColumnNames="note_id"
+                                 referencedTableName="note" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_foreign_key_to_note_label_label" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_note_label_label" foreignKeyTableName="note_label"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint constraintName="fk_note_label_label"
+                                 baseTableName="note_label" baseColumnNames="label_id"
+                                 referencedTableName="label" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="create_note_note_table" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="note_note"/>
+            </not>
+        </preConditions>
+        <createTable tableName="note_note">
+            <column name="note_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="related_note_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_primary_key_to_note_note" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="note_note"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey tableName="note_note" columnNames="note_id, related_note_id" constraintName="pk_note_note"/>
+    </changeSet>
+
+    <changeSet id="add_foreign_key_to_note_note_note1" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_note_note_note1" foreignKeyTableName="note_note"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint constraintName="fk_note_note_note1"
+                                 baseTableName="note_note" baseColumnNames="note_id"
+                                 referencedTableName="note" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_foreign_key_to_note_note_note2" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_note_note_note2" foreignKeyTableName="note_note"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint constraintName="fk_note_note_note2"
+                                 baseTableName="note_note" baseColumnNames="related_note_id"
+                                 referencedTableName="note" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
