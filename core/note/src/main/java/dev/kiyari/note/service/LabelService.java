@@ -1,9 +1,10 @@
 package dev.kiyari.note.service;
 
 import dev.kiyari.note.model.entity.Label;
+import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.repository.LabelRepository;
-import dev.kiyari.note.util.exception.CreateEntityException;
+import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import dev.kiyari.note.util.exception.DeleteEntityException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LabelService {
     private final LabelRepository labelRepository;
+    private final NoteService noteService;
 
     public Label read(Long id) {
         return labelRepository.findById(id).orElseThrow();
@@ -31,8 +33,8 @@ public class LabelService {
 
     public Label save(EditDto dto) {
         if (dto != null) {
-            if (labelRepository.existsByTitle(dto.getTitle())) {
-                throw new CreateEntityException("Label with this title already exists");
+            if (existsByTitle(dto.getTitle())) {
+                throw new SaveEntityException("Label with this title already exists");
             }
             return labelRepository.save(Label.parseEditDto(dto));
         }
@@ -44,7 +46,7 @@ public class LabelService {
     }
 
     public Label delete(Long id) {
-        if(labelRepository.existsById(id)) {
+        if(existsById(id)) {
             Label label = read(id);
 
             labelRepository.delete(label);
@@ -52,5 +54,38 @@ public class LabelService {
             return label;
         }
         throw new DeleteEntityException("Could not delete Label due to unexpected reasons.");
+    }
+
+    public Boolean existsById(Long id) {
+        if (id == null || id < 0) {
+            return false;
+        }
+        return labelRepository.existsById(id);
+    }
+
+    public Boolean existsByTitle(String title) {
+        if (title == null || title.trim().equals("")) {
+            return false;
+        }
+        return labelRepository.existsByTitle(title);
+    }
+
+    public Boolean isNotePresentInLabelRelatedNotes(Note note, Label label) {
+        return label.getRelatedNotes().contains(note);
+    }
+
+    public Label addRelatedNote(Long id, dev.kiyari.note.model.note.ListDto dto) {
+        if (!noteService.existsById(dto.getId())) {
+            throw new UnexpectedException("No such note");
+        }
+
+        Label label = read(id);
+        Note note = Note.parseDto(dto);
+        label.addRelatedNote(note);
+
+        if (!noteService.isLabelPresentsInNoteRelatedLabels(label, note)) {
+            note.addRelatedLabel(label);
+        }
+        return label;
     }
 }

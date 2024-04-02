@@ -32,21 +32,43 @@ public class Note extends BasicEntity {
 
     @Column(name = "title")
     @NonNull
+    @Setter
     private String title;
     @Column(name = "description")
+    @Setter
     private String description;
     @Column(name = "note")
+    @Setter
     private String note;
     private LocalDateTime dateCreated;
+    @Setter
     private LocalDateTime lastUpdated;
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST,
+                fetch = FetchType.EAGER)
     @JoinTable(name = "note_note",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
     private Set<Note> relatedNotes;
     @ManyToMany(mappedBy = "relatedNotes",
-            cascade = CascadeType.PERSIST)
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER)
     private Set<Label> relatedLabels = new HashSet<>();
+
+    public void addRelatedLabel(Label label) {
+        relatedLabels.add(label);
+    }
+
+    public void removeRelatedLabel(Label label) {
+        relatedLabels.remove(label);
+    }
+
+    public void addRelatedNote(Note note) {
+        relatedNotes.add(note);
+    }
+
+    public void removeRelatedNote(Note note) {
+        relatedNotes.remove(note);
+    }
 
     public static Note parseEditDto(EditDto dto) {
         if (dto == null) {

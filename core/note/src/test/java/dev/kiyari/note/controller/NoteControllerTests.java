@@ -61,8 +61,7 @@ class NoteControllerTests {
     }
 
     private void assertNoteFields(EditDto dto) {
-        assertNotNull(dto.getId());
-        assertNotNull(dto.getLabel());
+        assertNotNull(dto.getTitle());
         assertNotNull(dto.getDescription());
         assertNotNull(dto.getNote());
         assertNotNull(dto.getDateCreated());
@@ -113,9 +112,9 @@ class NoteControllerTests {
         EditDto dto = EditDto.builder() // ... (set values for EditDto)
                 .build();
         Note updatedNote = notes.get(1); // Assuming noteService.update() returns the updated note
-        Mockito.when(noteService.update(dto)).thenReturn(updatedNote);
+        Mockito.when(noteService.update(id, dto)).thenReturn(updatedNote);
 
-        ResponseEntity<EditDto> response = noteController.update(dto);
+        ResponseEntity<EditDto> response = noteController.update(id, dto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         EditDto responseDto = response.getBody();
         assert responseDto != null;

@@ -67,8 +67,20 @@ public class Label extends BasicEntity {
                 .build();
     }
 
+    public void addRelatedLabel(Label label) {
+        relatedLabels.add(label);
+    }
+
+    public void removeRelatedLabel(Label label) {
+        relatedLabels.remove(label);
+    }
+
     public void addRelatedNote(Note note) {
         relatedNotes.add(note);
+    }
+
+    public void removeRelatedNote(Note note) {
+        relatedNotes.remove(note);
     }
 
     @Override

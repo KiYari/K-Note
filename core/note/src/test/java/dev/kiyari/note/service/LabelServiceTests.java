@@ -126,4 +126,53 @@ public class LabelServiceTests {
 
         assertThrows(DeleteEntityException.class, () -> labelService.delete(nonExistingId));
     }
+
+    @Test
+    public void testExistsById() {
+        Long existingId = 1L;
+
+        when(labelRepository.existsById(existingId)).thenReturn(true);
+
+        assertTrue(labelService.existsById(existingId));
+    }
+
+    @Test
+    public void testExistsByIdNullReturnsFalse() {
+
+        assertFalse(labelService.existsById(null));
+    }
+
+    @Test
+    public void testExistsByIdIncorrectReturnsFalse() {
+        assertFalse(labelService.existsById(-1L));
+    }
+
+    @Test
+    public void testExistsByTitleNullReturnsFalse() {
+        assertFalse(labelService.existsByTitle(null));
+    }
+
+    @Test
+    public void testExistsByTitleEmptyReturnsFalse() {
+        assertFalse(labelService.existsByTitle("                "));
+    }
+
+    @Test
+    public void testExistsByTitleEmptyReturnsFalse2() {
+        assertFalse(labelService.existsByTitle("\n\n\n"));
+    }
+
+    @Test
+    public void testExistsByTitleEmptyReturnsFalse3() {
+        assertFalse(labelService.existsByTitle(""));
+    }
+
+    @Test
+    public void testIsNotePresentInRelatedNotes() {
+        Label label = labels.get(0);
+        Note note = new Note();
+        label.addRelatedNote(note);
+
+        assertTrue(labelService.isNotePresentInLabelRelatedNotes(note, label));
+    }
 }

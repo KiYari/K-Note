@@ -1,5 +1,6 @@
 package dev.kiyari.note.service;
 
+import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.repository.NoteRepository;
@@ -29,6 +30,7 @@ public class NoteServiceTests {
     @InjectMocks
     protected NoteService noteService;
     private List<Note> notes = new ArrayList<>();
+    private List<Label> labels = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -46,6 +48,9 @@ public class NoteServiceTests {
                 "New book, Tickets to a concert, Spa day",
                 new HashSet<>(), new HashSet<>(),
                 LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1)));
+
+        labels.add(new Label(1L, "Captivating Cosmos", "Explore the wonders of the universe",
+                new HashSet<>(), new HashSet<>()));
     }
 
     @Test
@@ -105,7 +110,7 @@ public class NoteServiceTests {
 
         when(noteRepository.save(updatedNote)).thenReturn(updatedNote);
 
-        Note savedNote = noteService.update(EditDto.parseObject(updatedNote));
+        Note savedNote = noteService.update(noteToUpdateId, EditDto.parseObject(updatedNote));
 
         assertNotNull(savedNote);
         assertEquals(updatedNote.getId(), savedNote.getId());
@@ -137,5 +142,26 @@ public class NoteServiceTests {
         when(noteRepository.existsById(nonExistingId)).thenReturn(false);
 
         assertThrows(DeleteEntityException.class, () -> noteService.delete(nonExistingId));
+    }
+
+    @Test
+    public void testExistsByIdNullReturnsFalse() {
+
+        assertFalse(noteRepository.existsById(null));
+    }
+
+    @Test
+    public void testExistsByIdIncorrectReturnsFalse() {
+        assertFalse(noteService.existsById(-1L));
+    }
+
+    @Test
+    public void testIsNotePresentInRelatedNotes() {
+        Label label = labels.get(0);
+        Note note = new Note();
+
+        note.addRelatedLabel(label);
+
+        assertTrue(noteService.isLabelPresentsInNoteRelatedLabels(label, note));
     }
 }

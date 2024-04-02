@@ -54,11 +54,13 @@ public class NoteController {
     @PutMapping()
     @Operation(summary = "Update note", description = "Updates existing note and retrieves updated label")
     public ResponseEntity<EditDto> update(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
             @Parameter(name = "dto", description = "Transferable object for editing Note model", required = true)
             @Schema(implementation = EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(noteService.update(dto))
+                EditDto.parseObject(noteService.update(id, dto))
         );
     }
 
@@ -72,17 +74,17 @@ public class NoteController {
         );
     }
 
-//    @PostMapping("/relatedLabel")
-//    @Operation(summary = "Add related label", description = "Adds new related label to note")
-//    public ResponseEntity<ListDto> addRelatedLabel(
-//            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
-//            @RequestParam(name = "id") Long id,
-//
-//            @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
-//            @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
-//            @RequestBody dev.kiyari.note.model.label.ListDto dto) {
-//        return ResponseEntity.ok(
-//                ListDto.parseObject(noteService.addRelatedLabel(id, dto))
-//        );
-//    }
+    @PostMapping("/relatedLabel")
+    @Operation(summary = "Add related label", description = "Adds new related label to note")
+    public ResponseEntity<ListDto> addRelatedLabel(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
+            @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
+            @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
+            @RequestBody dev.kiyari.note.model.label.ListDto dto) {
+        return ResponseEntity.ok(
+                ListDto.parseObject(noteService.addRelatedLabel(id, dto))
+        );
+    }
 }
