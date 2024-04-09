@@ -83,6 +83,24 @@
                                  referencedTableName="note" referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="add_label_label_table" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions>
+            <not>
+                <tableExists tableName="label_label"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="label_label">
+            <column name="label_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="related_label_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="add_foreign_key_to_note_label_label" author="termrdz@gmail.com">
         <validCheckSum>ANY</validCheckSum>
         <preConditions onFail="MARK_RAN">

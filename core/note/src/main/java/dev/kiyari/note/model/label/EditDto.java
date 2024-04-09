@@ -15,7 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditDto {
-    private Long id;
     private String title;
     private String description;
     private Set<Note> relatedNotes;
@@ -26,7 +25,6 @@ public class EditDto {
             return new EditDto();
         }
         return EditDto.builder()
-                .id(label.getId())
                 .title(label.getTitle())
                 .description(label.getDescription())
                 .relatedNotes(label.getRelatedNotes())
@@ -37,7 +35,6 @@ public class EditDto {
     @Override
     public String toString() {
         return "EditDto{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
