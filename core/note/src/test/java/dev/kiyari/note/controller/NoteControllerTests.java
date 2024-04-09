@@ -1,5 +1,6 @@
 package dev.kiyari.note.controller;
 
+import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
@@ -20,8 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NoteControllerTests {
@@ -32,6 +33,7 @@ class NoteControllerTests {
     private NoteService noteService;
 
     private List<Note> notes = new ArrayList<>();
+    private List<Label> labels = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -49,6 +51,9 @@ class NoteControllerTests {
                 "New book, Tickets to a concert, Spa day",
                 new HashSet<>(), new HashSet<>(),
                 LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1)));
+
+        labels.add(new Label(1L, "Captivating Cosmos", "Explore the wonders of the universe",
+                new HashSet<>(), new HashSet<>()));
     }
 
     private void assertNoteFields(ListDto dto) {
@@ -130,6 +135,41 @@ class NoteControllerTests {
         ResponseEntity<ListDto> response = noteController.delete(id);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         ListDto dto = response.getBody();
+        assert dto != null;
+        assertNoteFields(dto);
+    }
+
+    @Test
+    public void addRelatedLabelTest() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        note.addRelatedLabel(label);
+
+        when(noteService.addRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label))).thenReturn(note);
+
+        ResponseEntity<ListDto> response = noteController.addRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label));
+
+        ListDto dto = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assert dto != null;
+        assertNoteFields(dto);
+    }
+
+    @Test
+    public void removeRelatedLabelTest() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+
+        when(noteService.removeRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label))).thenReturn(note);
+
+        ResponseEntity<ListDto> response = noteController.deleteRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label));
+
+        ListDto dto = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assert dto != null;
         assertNoteFields(dto);
     }

@@ -88,4 +88,19 @@ public class NoteController {
                 ListDto.parseObject(noteService.addRelatedLabel(id, dto))
         );
     }
+
+    @DeleteMapping("/relatedLabel")
+    @Operation(summary = "Delete related label", description = "Deletes existing related label on note")
+    public ResponseEntity<ListDto> deleteRelatedLabel(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
+            @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
+            @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
+            @RequestBody dev.kiyari.note.model.label.ListDto dto) {
+
+        return ResponseEntity.ok(
+                ListDto.parseObject(noteService.removeRelatedLabel(id, dto))
+        );
+    }
 }
