@@ -9,6 +9,9 @@ services:
       - 'POSTGRES_USER=admin'
     ports:
       - '5432:5432'
+    volumes:
+      - ~/postgres124:/var/lib/postgresql/data
+    
       
   rabbitmq:
     image: 'rabbitmq:latest'
@@ -19,17 +22,13 @@ services:
       - '5672:5672'
       
       
-  note:
-    image: 'note:latest'
-    depends_on:
-      - postgres
-      - rabbitmq
-    environment:
-      POSTGRES_HOST: postgres
-      
-    ports:
-      - 3443:3443
-
-# Existing volumes
-volumes:
-  postgresql_data:
+#  note:
+#    image: 'note:latest'
+#    depends_on:
+#      - postgres
+#      - rabbitmq
+#    environment:
+#      POSTGRES_HOST: postgres
+#      
+#    ports:
+#      - 3443:3443
