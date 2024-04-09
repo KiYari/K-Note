@@ -5,6 +5,7 @@ import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.label.ListDto;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -31,13 +32,12 @@ public class Label extends BasicEntity implements Cloneable{
     @Setter
     private String description;
 
-    @ManyToMany
-    @JoinTable(name = "note_label",
-            joinColumns = @JoinColumn(name = "label_id"),
-            inverseJoinColumns = @JoinColumn(name = "note_id"))
+    @ManyToMany(mappedBy = "relatedLabels",
+            fetch = FetchType.LAZY)
     @Setter
     private Set<Note> relatedNotes = new HashSet<>();
-    @ManyToMany(cascade = CascadeType.PERSIST)
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "label_label",
             joinColumns = @JoinColumn(name = "label_id"),
             inverseJoinColumns = @JoinColumn(name = "related_label_id"))

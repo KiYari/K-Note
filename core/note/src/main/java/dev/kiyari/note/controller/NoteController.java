@@ -42,25 +42,25 @@ public class NoteController {
 
     @PostMapping()
     @Operation(summary = "Create note", description = "Creates new note and retrieves it back")
-    public ResponseEntity<EditDto> create(
+    public ResponseEntity<ListDto> create(
             @Parameter(name = "dto", description = "Transferable object for editing Note model", required = true)
             @Schema(implementation = EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(noteService.save(dto))
+                ListDto.parseObject(noteService.save(dto))
         );
     }
 
     @PutMapping()
     @Operation(summary = "Update note", description = "Updates existing note and retrieves updated label")
-    public ResponseEntity<EditDto> update(
+    public ResponseEntity<ListDto> update(
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
             @RequestParam(name = "id") Long id,
             @Parameter(name = "dto", description = "Transferable object for editing Note model", required = true)
             @Schema(implementation = EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(noteService.update(id, dto))
+                ListDto.parseObject(noteService.update(id, dto))
         );
     }
 

@@ -10,6 +10,7 @@ import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -33,6 +34,7 @@ public class NoteService {
         return notes;
     }
 
+    @Transactional
     public Note save(EditDto note) {
         if (note != null) {
             note.setDateCreated(LocalDateTime.now());
@@ -42,6 +44,7 @@ public class NoteService {
         throw new UnexpectedException("Could not save Note due to unexpected reasons.");
     }
 
+    @Transactional
     public Note update(Long id, EditDto dto) {
         if (!existsById(id)) {
             throw new SaveEntityException("There is no entity with such ID to update");
@@ -91,14 +94,13 @@ public class NoteService {
         Note note = read(id);
         note.addRelatedLabel(label);
 
-        if (!labelService.isNotePresentInLabelRelatedNotes(note, label)) {
+        if (labelService.isNotePresentInLabelRelatedNotes(note, label)) {
             throw new EntityAlreadyPresentException("Such label is already present in relatedNotes");
         }
 
         labelService.addRelatedNote(label.getId(), ListDto.parseObject(note));
-        update(note);
 
-        return note;
+        return update(note);
     }
 
     public Note removeRelatedLabel(Long id, dev.kiyari.note.model.label.ListDto dto) {

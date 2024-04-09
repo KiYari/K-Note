@@ -10,6 +10,7 @@ import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -32,6 +33,7 @@ public class LabelService {
         return notes;
     }
 
+    @Transactional
     public Label save(EditDto dto) {
         if (dto != null) {
             if (existsByTitle(dto.getTitle())) {
@@ -42,6 +44,7 @@ public class LabelService {
         throw new UnexpectedException("Could not save Label due to unexpected reasons.");
     }
 
+    @Transactional
     public Label update(Long id, EditDto label) {
         if (!existsById(id)) {
             throw new SaveEntityException("There is no entity with such ID to update");
@@ -93,7 +96,7 @@ public class LabelService {
         Label label = read(id);
         Note note = Note.parseDto(dto);
 
-        if (!isNotePresentInLabelRelatedNotes(note, label)) {
+        if (isNotePresentInLabelRelatedNotes(note, label)) {
             label.addRelatedNote(note);
             update(label);
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +20,9 @@ public class ListDto {
     private Long id;
     private String title;
     private String description;
+    @JsonIgnore
     private Set<Note> relatedNotes;
+    @JsonIgnore
     private Set<Label> relatedLabels;
 
 

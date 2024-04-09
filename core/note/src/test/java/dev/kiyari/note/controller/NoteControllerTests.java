@@ -104,9 +104,9 @@ class NoteControllerTests {
         Note savedNote = notes.get(0); // Assuming noteService.save() returns an existing note
         Mockito.when(noteService.save(dto)).thenReturn(savedNote);
 
-        ResponseEntity<EditDto> response = noteController.create(dto);
+        ResponseEntity<ListDto> response = noteController.create(dto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        EditDto responseDto = response.getBody();
+        ListDto responseDto = response.getBody();
         assert responseDto != null;
         assertNoteFields(responseDto);
     }
@@ -119,9 +119,9 @@ class NoteControllerTests {
         Note updatedNote = notes.get(1); // Assuming noteService.update() returns the updated note
         Mockito.when(noteService.update(id, dto)).thenReturn(updatedNote);
 
-        ResponseEntity<EditDto> response = noteController.update(id, dto);
+        ResponseEntity<ListDto> response = noteController.update(id, dto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        EditDto responseDto = response.getBody();
+        ListDto responseDto = response.getBody();
         assert responseDto != null;
         assertNoteFields(responseDto);
     }

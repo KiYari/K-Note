@@ -5,11 +5,14 @@ import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "note")
@@ -43,16 +46,20 @@ public class Note extends BasicEntity implements Cloneable {
     private LocalDateTime dateCreated;
     @Setter
     private LocalDateTime lastUpdated;
-    @ManyToMany(cascade = CascadeType.PERSIST,
-                fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "note_note",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
+    @JsonIgnore
     @Setter
     private Set<Note> relatedNotes;
-    @ManyToMany(mappedBy = "relatedNotes",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER)
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "note_label",
+            joinColumns = @JoinColumn(name = "note_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id"))
+    @JsonIgnore
     @Setter
     private Set<Label> relatedLabels = new HashSet<>();
 
@@ -111,7 +118,7 @@ public class Note extends BasicEntity implements Cloneable {
                 ", note='" + note + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", lastUpdated=" + lastUpdated +
-                ", relatedLabels=" + relatedLabels +
+                ", relatedLabels=" + relatedLabels.stream().map(Label::getId).collect(Collectors.toSet()) +
                 '}';
     }
 
