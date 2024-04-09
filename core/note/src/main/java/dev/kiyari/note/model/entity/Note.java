@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "note")
 @NoArgsConstructor
 @Getter
-public class Note extends BasicEntity {
+public class Note extends BasicEntity implements Cloneable {
 
     @Builder
     public Note(Long id, @NonNull String title, String description, @NonNull String note, Set<Note> relatedNotes, Set<Label> relatedLabels,
@@ -48,10 +48,12 @@ public class Note extends BasicEntity {
     @JoinTable(name = "note_note",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
+    @Setter
     private Set<Note> relatedNotes;
     @ManyToMany(mappedBy = "relatedNotes",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER)
+    @Setter
     private Set<Label> relatedLabels = new HashSet<>();
 
     public void addRelatedLabel(Label label) {
@@ -109,6 +111,7 @@ public class Note extends BasicEntity {
                 ", note='" + note + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", lastUpdated=" + lastUpdated +
+                ", relatedLabels=" + relatedLabels +
                 '}';
     }
 
@@ -122,5 +125,27 @@ public class Note extends BasicEntity {
     @Override
     public int hashCode() {
         return Objects.hash(title, description, note, dateCreated, lastUpdated, relatedLabels);
+    }
+
+    @Override
+    public Note clone() {
+        try {
+            Note clone = (Note) super.clone();
+            Set<Note> clonedRelatedNotes = new HashSet<>();
+            for (Note relatedNote : relatedNotes) {
+                clonedRelatedNotes.add(relatedNote.clone());
+            }
+            clone.relatedNotes = clonedRelatedNotes;
+
+            Set<Label> clonedRelatedLabels = new HashSet<>();
+            for (Label relatedLabel : relatedLabels) {
+                clonedRelatedLabels.add(relatedLabel.clone());
+            }
+            clone.relatedLabels = clonedRelatedLabels;
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

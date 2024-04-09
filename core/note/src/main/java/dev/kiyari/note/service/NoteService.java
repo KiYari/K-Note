@@ -5,7 +5,7 @@ import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.repository.NoteRepository;
-import dev.kiyari.note.util.exception.DeleteEntityException;
+import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
 import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +52,14 @@ public class NoteService {
         existing.setLastUpdated(LocalDateTime.now());
         existing.setDescription(dto.getDescription());
         existing.setTitle(dto.getTitle());
+        existing.setRelatedNotes(dto.getRelatedNotes());
+        existing.setRelatedLabels(dto.getRelatedLabels());
 
         return noteRepository.save(existing);
+    }
+
+    public Note update(Note note) {
+        return update(note.getId(), EditDto.parseObject(note));
     }
 
     public Note delete(Long id) {
@@ -62,7 +68,7 @@ public class NoteService {
             noteRepository.delete(note);
             return note;
         }
-        throw new DeleteEntityException("Could not delete note due to unexpected reasons.");
+        throw new EntityAlreadyPresentException("Could not delete note due to unexpected reasons.");
     }
 
     public Boolean existsById(Long id) {
@@ -86,8 +92,31 @@ public class NoteService {
         note.addRelatedLabel(label);
 
         if (!labelService.isNotePresentInLabelRelatedNotes(note, label)) {
-            labelService.addRelatedNote(label.getId(), ListDto.parseObject(note));
+            throw new EntityAlreadyPresentException("Such label is already present in relatedNotes");
         }
+
+        labelService.addRelatedNote(label.getId(), ListDto.parseObject(note));
+        update(note);
+
+        return note;
+    }
+
+    public Note removeRelatedLabel(Long id, dev.kiyari.note.model.label.ListDto dto) {
+        if (!labelService.existsById(dto.getId()) || !labelService.existsByTitle(dto.getTitle())) {
+            throw new UnexpectedException("No such label");
+        }
+
+        Label label = Label.parseListDto(dto);
+        Note note = read(id);
+
+        if (!isLabelPresentsInNoteRelatedLabels(label, note)) {
+            throw new EntityAlreadyPresentException("There is no such Label in relatedLabels");
+        }
+
+        labelService.removeRelatedNote(label.getId(), ListDto.parseObject(note));
+        note.removeRelatedLabel(label);
+        update(note);
+
         return note;
     }
 }

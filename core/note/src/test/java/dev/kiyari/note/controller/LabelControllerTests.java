@@ -133,11 +133,12 @@ public class LabelControllerTests {
 
     @Test
     public void testUpdateLabel_ValidDto_ReturnsUpdatedLabel(){
+        Long id = 2L;
         EditDto updateDto = EditDto.parseObject(labels.get(1));
         Label expectedLabel = Label.parseEditDto(updateDto);
-        when(labelService.update(updateDto)).thenReturn(expectedLabel);
+        when(labelService.update(id, updateDto)).thenReturn(expectedLabel);
 
-        ResponseEntity<EditDto> response = labelController.update(updateDto);
+        ResponseEntity<EditDto> response = labelController.update(id, updateDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());

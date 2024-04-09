@@ -54,11 +54,14 @@ public class LabelController {
     @PutMapping()
     @Operation(summary = "Update label", description = "Updates existing label and retrieves updated label")
     public ResponseEntity<EditDto> update(
+            @Parameter(name = "id", description = "ID of label", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
             @Parameter(name = "dto", description = "Transferable object for editing model", required = true)
             @Schema(implementation = dev.kiyari.note.model.note.EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(labelService.update(dto))
+                EditDto.parseObject(labelService.update(id, dto))
         );
     }
 
