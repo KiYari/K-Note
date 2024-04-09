@@ -2,8 +2,8 @@ package dev.kiyari.note.service;
 
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
-import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.model.note.EditDto;
+import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.repository.NoteRepository;
 import dev.kiyari.note.util.exception.DeleteEntityException;
 import dev.kiyari.note.util.exception.SaveEntityException;

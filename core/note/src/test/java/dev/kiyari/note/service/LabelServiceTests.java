@@ -3,6 +3,7 @@ package dev.kiyari.note.service;
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.label.EditDto;
+import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.repository.LabelRepository;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import dev.kiyari.note.util.exception.DeleteEntityException;
@@ -29,6 +30,7 @@ public class LabelServiceTests {
     private LabelService labelService;
 
     private List<Label> labels = new ArrayList<>();
+    private List<Note> notes = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -41,19 +43,20 @@ public class LabelServiceTests {
 
         Note mockNote1 = new Note(null, "Black Holes", "Black holes are regions in spacetime where gravity is so strong that nothing, not even light, can escape",
                 "A black hole is a place in spacetime where gravity pulls so much that even light cannot escape. This is because gravity is caused by mass, and a black hole has a very large mass in a very small space. The result is a gravitational pull so strong that nothing can get out.", emptyNotes, emptyLabels, now, now);
-        mockLabel1.addRelatedNote(mockNote1);
 
         Label mockLabel2 = new Label(2L, "Flourishing Flora", "Discover the diversity of plant life", emptyNotes, emptyLabels);
 
         Note mockNote2 = new Note(null, "Rainforests", "Rainforests are the Earth's lungs, teeming with life",
                 "Rainforests are the Earth's most biodiverse habitats. They cover about 2% of the Earth's surface but are home to more than half of the world's plant and animal species.", emptyNotes, emptyLabels, now, now);
-        mockLabel2.addRelatedNote(mockNote2);
 
         Label mockLabel3 = new Label(3L, "Mesmerizing Music", "Delve into the world of sound", emptyNotes, emptyLabels);
 
         this.labels.add(mockLabel1);
         this.labels.add(mockLabel2);
         this.labels.add(mockLabel3);
+
+        this.notes.add(mockNote1);
+        this.notes.add(mockNote2);
     }
 
     @Test
@@ -174,5 +177,26 @@ public class LabelServiceTests {
         label.addRelatedNote(note);
 
         assertTrue(labelService.isNotePresentInLabelRelatedNotes(note, label));
+    }
+
+    @Test
+    public void testAddNewRelatedNoteShouldReturnTrue() {
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+
+        when(labelRepository.findById(1L)).thenReturn(Optional.ofNullable(label));
+
+        assertTrue(labelService.addRelatedNote(1L, ListDto.parseObject(note)));
+    }
+
+    @Test
+    public void testAddExistingRelatedNoteShouldReturnFalse() {
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+
+        when(labelRepository.findById(1L)).thenReturn(Optional.ofNullable(label));
+
+        labelService.addRelatedNote(1L, ListDto.parseObject(note));
+        assertFalse(labelService.addRelatedNote(1L, ListDto.parseObject(note)));
     }
 }

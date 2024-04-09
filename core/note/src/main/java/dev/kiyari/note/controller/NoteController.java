@@ -83,6 +83,7 @@ public class NoteController {
             @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
             @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
             @RequestBody dev.kiyari.note.model.label.ListDto dto) {
+
         return ResponseEntity.ok(
                 ListDto.parseObject(noteService.addRelatedLabel(id, dto))
         );

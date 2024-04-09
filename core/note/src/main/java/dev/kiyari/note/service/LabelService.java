@@ -4,10 +4,11 @@ import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.repository.LabelRepository;
+import dev.kiyari.note.util.exception.DeleteEntityException;
 import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
-import dev.kiyari.note.util.exception.DeleteEntityException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -17,7 +18,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LabelService {
     private final LabelRepository labelRepository;
-    private final NoteService noteService;
 
     public Label read(Long id) {
         return labelRepository.findById(id).orElseThrow();
@@ -74,18 +74,18 @@ public class LabelService {
         return label.getRelatedNotes().contains(note);
     }
 
-    public Label addRelatedNote(Long id, dev.kiyari.note.model.note.ListDto dto) {
-        if (!noteService.existsById(dto.getId())) {
-            throw new UnexpectedException("No such note");
-        }
+    public Boolean addRelatedNote(Long id, dev.kiyari.note.model.note.ListDto dto) {
 
         Label label = read(id);
         Note note = Note.parseDto(dto);
-        label.addRelatedNote(note);
 
-        if (!noteService.isLabelPresentsInNoteRelatedLabels(label, note)) {
-            note.addRelatedLabel(label);
+        if (!isNotePresentInLabelRelatedNotes(note, label)) {
+            label.addRelatedNote(note);
+
+            return true;
         }
-        return label;
+
+        return false;
+
     }
 }
