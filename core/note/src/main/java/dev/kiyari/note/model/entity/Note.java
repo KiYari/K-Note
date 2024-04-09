@@ -5,17 +5,20 @@ import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "note")
 @NoArgsConstructor
 @Getter
-public class Note extends BasicEntity {
+public class Note extends BasicEntity implements Cloneable {
 
     @Builder
     public Note(Long id, @NonNull String title, String description, @NonNull String note, Set<Note> relatedNotes, Set<Label> relatedLabels,
@@ -43,15 +46,21 @@ public class Note extends BasicEntity {
     private LocalDateTime dateCreated;
     @Setter
     private LocalDateTime lastUpdated;
-    @ManyToMany(cascade = CascadeType.PERSIST,
-                fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "note_note",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
+    @JsonIgnore
+    @Setter
     private Set<Note> relatedNotes;
-    @ManyToMany(mappedBy = "relatedNotes",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER)
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "note_label",
+            joinColumns = @JoinColumn(name = "note_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id"))
+    @JsonIgnore
+    @Setter
     private Set<Label> relatedLabels = new HashSet<>();
 
     public void addRelatedLabel(Label label) {
@@ -109,6 +118,7 @@ public class Note extends BasicEntity {
                 ", note='" + note + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", lastUpdated=" + lastUpdated +
+                ", relatedLabels=" + relatedLabels.stream().map(Label::getId).collect(Collectors.toSet()) +
                 '}';
     }
 
@@ -122,5 +132,27 @@ public class Note extends BasicEntity {
     @Override
     public int hashCode() {
         return Objects.hash(title, description, note, dateCreated, lastUpdated, relatedLabels);
+    }
+
+    @Override
+    public Note clone() {
+        try {
+            Note clone = (Note) super.clone();
+            Set<Note> clonedRelatedNotes = new HashSet<>();
+            for (Note relatedNote : relatedNotes) {
+                clonedRelatedNotes.add(relatedNote.clone());
+            }
+            clone.relatedNotes = clonedRelatedNotes;
+
+            Set<Label> clonedRelatedLabels = new HashSet<>();
+            for (Label relatedLabel : relatedLabels) {
+                clonedRelatedLabels.add(relatedLabel.clone());
+            }
+            clone.relatedLabels = clonedRelatedLabels;
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

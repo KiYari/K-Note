@@ -42,23 +42,26 @@ public class LabelController {
 
     @PostMapping()
     @Operation(summary = "Create label", description = "Creates new label and retrieves it back")
-    public ResponseEntity<EditDto> create(
+    public ResponseEntity<ListDto> create(
             @Parameter(name = "dto", description = "Transferable object for editing model", required = true)
             @Schema(implementation = dev.kiyari.note.model.note.EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(labelService.save(dto))
+                ListDto.parseObject(labelService.save(dto))
         );
     }
 
     @PutMapping()
     @Operation(summary = "Update label", description = "Updates existing label and retrieves updated label")
-    public ResponseEntity<EditDto> update(
+    public ResponseEntity<ListDto> update(
+            @Parameter(name = "id", description = "ID of label", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
             @Parameter(name = "dto", description = "Transferable object for editing model", required = true)
             @Schema(implementation = dev.kiyari.note.model.note.EditDto.class)
             @RequestBody EditDto dto) {
         return ResponseEntity.ok(
-                EditDto.parseObject(labelService.update(dto))
+                ListDto.parseObject(labelService.update(id, dto))
         );
     }
 

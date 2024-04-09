@@ -4,11 +4,10 @@ import dev.kiyari.note.model.BasicEntity;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.label.ListDto;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,7 +15,7 @@ import java.util.Set;
 @Table(name = "label")
 @NoArgsConstructor
 @Getter
-public class Label extends BasicEntity {
+public class Label extends BasicEntity implements Cloneable{
 
     @Builder
     public Label(Long id, String title, String description, Set<Note> relatedNotes, Set<Label> relatedLabels) {
@@ -28,19 +27,22 @@ public class Label extends BasicEntity {
     }
 
     @NonNull
+    @Setter
     private String title;
+    @Setter
     private String description;
 
-    @ManyToMany
-    @JoinTable(name = "note_label",
-            joinColumns = @JoinColumn(name = "label_id"),
-            inverseJoinColumns = @JoinColumn(name = "note_id"))
-    private Set<Note> relatedNotes;
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "relatedLabels",
+            fetch = FetchType.LAZY)
+    @Setter
+    private Set<Note> relatedNotes = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "label_label",
             joinColumns = @JoinColumn(name = "label_id"),
             inverseJoinColumns = @JoinColumn(name = "related_label_id"))
-    private Set<Label> relatedLabels;
+    @Setter
+    private Set<Label> relatedLabels = new HashSet<>();
 
     public static Label parseEditDto(EditDto dto) {
         if (dto == null) {
@@ -101,5 +103,28 @@ public class Label extends BasicEntity {
     @Override
     public int hashCode() {
         return Objects.hash(title, description);
+    }
+
+    @Override
+    public Label clone() {
+        try {
+            Label clone = (Label) super.clone();
+
+            Set<Note> clonedRelatedNotes = new HashSet<>();
+            for (Note relatedNote : relatedNotes) {
+                clonedRelatedNotes.add(relatedNote.clone());
+            }
+            clone.relatedNotes = clonedRelatedNotes;
+
+            Set<Label> clonedRelatedLabels = new HashSet<>();
+            for (Label relatedLabel : relatedLabels) {
+                clonedRelatedLabels.add(relatedLabel.clone());
+            }
+            clone.relatedLabels = clonedRelatedLabels;
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

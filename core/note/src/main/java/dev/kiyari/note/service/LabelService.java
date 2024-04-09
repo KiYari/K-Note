@@ -4,13 +4,15 @@ import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.repository.LabelRepository;
-import dev.kiyari.note.util.exception.DeleteEntityException;
+import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
+import dev.kiyari.note.util.exception.NoSuchEntityException;
 import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ public class LabelService {
         return notes;
     }
 
+    @Transactional
     public Label save(EditDto dto) {
         if (dto != null) {
             if (existsByTitle(dto.getTitle())) {
@@ -41,8 +44,23 @@ public class LabelService {
         throw new UnexpectedException("Could not save Label due to unexpected reasons.");
     }
 
-    public Label update(EditDto note) {
-        return save(note);
+    @Transactional
+    public Label update(Long id, EditDto label) {
+        if (!existsById(id)) {
+            throw new SaveEntityException("There is no entity with such ID to update");
+        }
+        Label existing = read(id);
+
+        existing.setDescription(label.getDescription());
+        existing.setTitle(label.getTitle());
+        existing.setRelatedLabels(label.getRelatedLabels());
+        existing.setRelatedNotes(label.getRelatedNotes());
+
+        return labelRepository.save(existing);
+    }
+
+    public Label update(Label label) {
+        return update(label.getId(), EditDto.parseObject(label));
     }
 
     public Label delete(Long id) {
@@ -53,7 +71,7 @@ public class LabelService {
 
             return label;
         }
-        throw new DeleteEntityException("Could not delete Label due to unexpected reasons.");
+        throw new EntityAlreadyPresentException("Could not delete Label due to unexpected reasons.");
     }
 
     public Boolean existsById(Long id) {
@@ -75,17 +93,30 @@ public class LabelService {
     }
 
     public Boolean addRelatedNote(Long id, dev.kiyari.note.model.note.ListDto dto) {
-
         Label label = read(id);
         Note note = Note.parseDto(dto);
 
-        if (!isNotePresentInLabelRelatedNotes(note, label)) {
+        if (isNotePresentInLabelRelatedNotes(note, label)) {
             label.addRelatedNote(note);
+            update(label);
 
             return true;
         }
 
         return false;
+    }
 
+    public Boolean removeRelatedNote(Long id, dev.kiyari.note.model.note.ListDto dto) {
+        Label label = read(id);
+        Note note = Note.parseDto(dto);
+
+        if (!isNotePresentInLabelRelatedNotes(note, label)) {
+            throw new NoSuchEntityException("There is no such Note in RelatedNotes");
+        }
+
+        label.removeRelatedNote(note);
+
+        update(label);
+        return true;
     }
 }

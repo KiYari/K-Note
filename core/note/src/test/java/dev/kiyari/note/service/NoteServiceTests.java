@@ -2,9 +2,11 @@ package dev.kiyari.note.service;
 
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
+import dev.kiyari.note.model.label.ListDto;
 import dev.kiyari.note.model.note.EditDto;
+import dev.kiyari.note.repository.LabelRepository;
 import dev.kiyari.note.repository.NoteRepository;
-import dev.kiyari.note.util.exception.DeleteEntityException;
+import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,8 @@ public class NoteServiceTests {
 
     @InjectMocks
     protected NoteService noteService;
+    @Mock
+    protected LabelService labelService;
     private List<Note> notes = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
 
@@ -141,7 +145,7 @@ public class NoteServiceTests {
         Long nonExistingId = 4L;
         when(noteRepository.existsById(nonExistingId)).thenReturn(false);
 
-        assertThrows(DeleteEntityException.class, () -> noteService.delete(nonExistingId));
+        assertThrows(EntityAlreadyPresentException.class, () -> noteService.delete(nonExistingId));
     }
 
     @Test
@@ -163,5 +167,49 @@ public class NoteServiceTests {
         note.addRelatedLabel(label);
 
         assertTrue(noteService.isLabelPresentsInNoteRelatedLabels(label, note));
+    }
+
+    @Test
+    public void testRemoveRelatedLabel_ShouldReturnNote() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        Note unchangedNote = note.clone();
+        note.addRelatedLabel(label);
+        label.addRelatedNote(note);
+
+
+        when(labelService.existsByTitle(label.getTitle())).thenReturn(true);
+        when(labelService.existsById(id)).thenReturn(true);
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+        when(noteRepository.existsById(id)).thenReturn(true);
+
+        noteService.removeRelatedLabel(id, ListDto.parseObject(label));
+
+        assertEquals(note.getId(), unchangedNote.getId());
+        assertEquals(note.getTitle(), unchangedNote.getTitle());
+        assertEquals(note.getDescription(), unchangedNote.getDescription());
+        assertEquals(note.getNote(), unchangedNote.getNote());
+        assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
+        assertEquals(note.getRelatedLabels(), unchangedNote.getRelatedLabels());
+
+        assertFalse(note.getRelatedLabels().contains(label));
+    }
+
+    @Test
+    public void testRemoveRelatedLabel_ShouldDifferFromUnchanged() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        Note unchangedNote = note.clone();
+        note.addRelatedLabel(label);
+        label.addRelatedNote(note);
+
+        assertEquals(note.getId(), unchangedNote.getId());
+        assertEquals(note.getTitle(), unchangedNote.getTitle());
+        assertEquals(note.getDescription(), unchangedNote.getDescription());
+        assertEquals(note.getNote(), unchangedNote.getNote());
+        assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
+        assertNotEquals(note.getRelatedLabels(), unchangedNote.getRelatedLabels());
     }
 }

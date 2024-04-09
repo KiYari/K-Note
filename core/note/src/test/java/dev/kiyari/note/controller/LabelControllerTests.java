@@ -119,12 +119,12 @@ public class LabelControllerTests {
         Label expectedLabel = Label.parseEditDto(newDto);
         when(labelService.save(newDto)).thenReturn(expectedLabel);
 
-        ResponseEntity<EditDto> response = labelController.create(newDto);
+        ResponseEntity<ListDto> response = labelController.create(newDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        EditDto actualDto = response.getBody();
+        ListDto actualDto = response.getBody();
         assertNotNull(actualDto);
 
         assertEquals(expectedLabel.getTitle(), actualDto.getTitle());
@@ -133,16 +133,17 @@ public class LabelControllerTests {
 
     @Test
     public void testUpdateLabel_ValidDto_ReturnsUpdatedLabel(){
+        Long id = 2L;
         EditDto updateDto = EditDto.parseObject(labels.get(1));
         Label expectedLabel = Label.parseEditDto(updateDto);
-        when(labelService.update(updateDto)).thenReturn(expectedLabel);
+        when(labelService.update(id, updateDto)).thenReturn(expectedLabel);
 
-        ResponseEntity<EditDto> response = labelController.update(updateDto);
+        ResponseEntity<ListDto> response = labelController.update(id, updateDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        EditDto actualDto = response.getBody();
+        ListDto actualDto = response.getBody();
         assertNotNull(actualDto);
 
         assertEquals(expectedLabel.getId(), actualDto.getId());

@@ -6,7 +6,7 @@ import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.repository.LabelRepository;
 import dev.kiyari.note.util.exception.UnexpectedException;
-import dev.kiyari.note.util.exception.DeleteEntityException;
+import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -127,7 +127,7 @@ public class LabelServiceTests {
         Long nonExistingId = 10L;
         when(labelRepository.existsById(nonExistingId)).thenReturn(false);
 
-        assertThrows(DeleteEntityException.class, () -> labelService.delete(nonExistingId));
+        assertThrows(EntityAlreadyPresentException.class, () -> labelService.delete(nonExistingId));
     }
 
     @Test

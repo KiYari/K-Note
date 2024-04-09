@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,7 +21,9 @@ public class ListDto {
     private String title;
     private String description;
     private String note;
+    @JsonIgnore
     private Set<Note> relatedNotes;
+    @JsonIgnore
     private Set<Label> relatedLabels;
     private LocalDateTime dateCreated;
     private LocalDateTime lastUpdated;
