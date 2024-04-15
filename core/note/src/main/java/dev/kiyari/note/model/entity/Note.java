@@ -125,6 +125,12 @@ public class Note extends BasicEntity implements Cloneable {
         return title.equals(note1.title) && Objects.equals(description, note1.description) && note.equals(note1.note) && Objects.equals(dateCreated, note1.dateCreated) && Objects.equals(lastUpdated, note1.lastUpdated) && Objects.equals(relatedNotes, note1.relatedNotes) && Objects.equals(relatedLabels, note1.relatedLabels);
     }
 
+    public Boolean equalsIgnoreLastUpdate(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Note note1)) return false;
+        return title.equals(note1.title) && Objects.equals(description, note1.description) && note.equals(note1.note) && Objects.equals(dateCreated, note1.dateCreated) && Objects.equals(relatedNotes, note1.relatedNotes) && Objects.equals(relatedLabels, note1.relatedLabels);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(title, description, note, dateCreated, lastUpdated, relatedLabels);

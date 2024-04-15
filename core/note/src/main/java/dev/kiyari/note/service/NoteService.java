@@ -87,38 +87,79 @@ public class NoteService {
         return note.getRelatedLabels().contains(label);
     }
 
-    public Note addRelatedLabel(Long id, dev.kiyari.note.model.label.ListDto dto) {
-        if (!labelService.existsById(dto.getId()) || !labelService.existsByTitle(dto.getTitle())) {
+    public Boolean isNotePresentsInNoteRelatedNotes(Note relatedNote, Note note) {
+        return note.getRelatedNotes().contains(relatedNote);
+    }
+
+    public Note addRelatedLabel(Long id, Long labelId) {
+        if (!labelService.existsById(labelId)) {
             throw new UnexpectedException("No such label");
         }
 
-        Label label = Label.parseListDto(dto);
+        Label label = labelService.read(labelId);
         Note note = read(id);
-        note.addRelatedLabel(label);
-
         if (isLabelPresentsInNoteRelatedLabels(label, note)) {
             throw new EntityAlreadyPresentException("Such label is already present in relatedNotes");
         }
+
+        note.addRelatedLabel(label);
 
         labelService.addRelatedNote(label.getId(), ListDto.parseObject(note));
 
         return update(note);
     }
 
-    public Note removeRelatedLabel(Long id, dev.kiyari.note.model.label.ListDto dto) {
-        if (!labelService.existsById(dto.getId()) || !labelService.existsByTitle(dto.getTitle())) {
+    public Note addRelatedNote(Long id, Long noteId) {
+        if (!existsById(noteId)) {
+            throw new UnexpectedException("No such note");
+        }
+
+        Note noteToAdd = read(noteId);
+        Note note = read(id);
+        if (isNotePresentsInNoteRelatedNotes(noteToAdd, note)) {
+            throw new EntityAlreadyPresentException("Such label is already present in relatedNotes");
+        }
+
+        note.addRelatedNote(noteToAdd);
+        noteToAdd.addRelatedNote(note);
+
+        update(noteToAdd);
+        return update(note);
+    }
+
+    public Note removeRelatedLabel(Long id, Long label_id) {
+        if (!labelService.existsById(label_id)) {
             throw new UnexpectedException("No such label");
         }
 
-        Label label = Label.parseListDto(dto);
+        Label label = labelService.read(label_id);
         Note note = read(id);
 
         if (!isLabelPresentsInNoteRelatedLabels(label, note)) {
-            throw new EntityAlreadyPresentException("There is no such Label in relatedLabels");
+            throw new NoSuchEntityException("There is no such Label in relatedLabels");
         }
 
         labelService.removeRelatedNote(label.getId(), ListDto.parseObject(note));
         note.removeRelatedLabel(label);
+        update(note);
+
+        return note;
+    }
+
+    public Note removeRelatedNote(Long id, Long noteId) {
+        if (!existsById(noteId)) {
+            throw new UnexpectedException("No such label");
+        }
+
+        Note noteToAdd = read(noteId);
+        Note note = read(id);
+
+        if (!isNotePresentsInNoteRelatedNotes(noteToAdd, note)) {
+            throw new NoSuchEntityException("There is no such Label in relatedLabels");
+        }
+
+        labelService.removeRelatedNote(noteToAdd.getId(), ListDto.parseObject(note));
+        note.removeRelatedNote(noteToAdd);
         update(note);
 
         return note;

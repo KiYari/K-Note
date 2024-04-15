@@ -182,6 +182,7 @@ public class LabelServiceTests {
     @Test
     public void testAddNewRelatedNoteShouldReturnTrue() {
         Label label = labels.get(0);
+
         Note note = notes.get(0);
         label.addRelatedNote(note);
 

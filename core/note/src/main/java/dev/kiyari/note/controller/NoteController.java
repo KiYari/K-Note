@@ -80,12 +80,25 @@ public class NoteController {
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
             @RequestParam(name = "id") Long id,
 
-            @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
-            @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
-            @RequestBody dev.kiyari.note.model.label.ListDto dto) {
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "labelId") Long labelId) {
 
         return ResponseEntity.ok(
-                ListDto.parseObject(noteService.addRelatedLabel(id, dto))
+                ListDto.parseObject(noteService.addRelatedLabel(id, labelId))
+        );
+    }
+
+    @PostMapping("/relatedNote")
+    @Operation(summary = "Add related label", description = "Adds new related label to note")
+    public ResponseEntity<ListDto> addRelatedNote(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "noteId") Long noteId) {
+
+        return ResponseEntity.ok(
+                ListDto.parseObject(noteService.addRelatedNote(id, noteId))
         );
     }
 
@@ -95,11 +108,25 @@ public class NoteController {
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
             @RequestParam(name = "id") Long id,
 
-            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
-            @RequestParam(name = "id") Long label_id) {
+            @Parameter(name = "id", description = "ID of label", required = true, example = "5")
+            @RequestParam(name = "labelId") Long labelId) {
 
         return ResponseEntity.ok(
-                ListDto.parseObject(noteService.removeRelatedLabel(id, label_id))
+                ListDto.parseObject(noteService.removeRelatedLabel(id, labelId))
+        );
+    }
+
+    @DeleteMapping("/relatedNote")
+    @Operation(summary = "Delete related note", description = "Deletes existing related note on note")
+    public ResponseEntity<ListDto> deleteRelatedNote(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id,
+
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "noteId") Long noteId) {
+
+        return ResponseEntity.ok(
+                ListDto.parseObject(noteService.removeRelatedNote(id, noteId))
         );
     }
 

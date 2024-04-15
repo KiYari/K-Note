@@ -148,13 +148,14 @@ class NoteControllerTests {
     @Test
     public void addRelatedLabelTest() {
         Long id = 1L;
+        Long labelId = 1L;
         Label label = labels.get(0);
         Note note = notes.get(0);
         note.addRelatedLabel(label);
 
-        when(noteService.addRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label))).thenReturn(note);
+        when(noteService.addRelatedLabel(id, labelId)).thenReturn(note);
 
-        ResponseEntity<ListDto> response = noteController.addRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label));
+        ResponseEntity<ListDto> response = noteController.addRelatedLabel(id,labelId);
 
         ListDto dto = response.getBody();
 
@@ -166,12 +167,31 @@ class NoteControllerTests {
     @Test
     public void removeRelatedLabelTest() {
         Long id = 1L;
+        Long labelId = 1L;
         Label label = labels.get(0);
         Note note = notes.get(0);
 
-        when(noteService.removeRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label))).thenReturn(note);
+        when(noteService.removeRelatedLabel(id, labelId)).thenReturn(note);
 
-        ResponseEntity<ListDto> response = noteController.deleteRelatedLabel(id, dev.kiyari.note.model.label.ListDto.parseObject(label));
+        ResponseEntity<ListDto> response = noteController.deleteRelatedLabel(id, labelId);
+
+        ListDto dto = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assert dto != null;
+        assertNoteFields(dto);
+    }
+
+    @Test
+    public void removeRelatedNoteTest() {
+        Long id = 1L;
+        Long noteRemoveId = 2L;
+        Note noteToRemove = notes.get(1);
+        Note note = notes.get(0);
+
+        when(noteService.removeRelatedNote(id, noteRemoveId)).thenReturn(note);
+
+        ResponseEntity<ListDto> response = noteController.deleteRelatedNote(id, noteRemoveId);
 
         ListDto dto = response.getBody();
 
