@@ -5,8 +5,6 @@ import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import jakarta.persistence.*;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
-import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -50,7 +48,6 @@ public class Note extends BasicEntity implements Cloneable {
     @JoinTable(name = "note_note",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "related_note_id"))
-    @JsonIgnore
     @Setter
     private Set<Note> relatedNotes;
 
@@ -59,7 +56,6 @@ public class Note extends BasicEntity implements Cloneable {
     @JoinTable(name = "note_label",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
-    @JsonIgnore
     @Setter
     private Set<Label> relatedLabels = new HashSet<>();
 
@@ -127,6 +123,12 @@ public class Note extends BasicEntity implements Cloneable {
         if (this == o) return true;
         if (!(o instanceof Note note1)) return false;
         return title.equals(note1.title) && Objects.equals(description, note1.description) && note.equals(note1.note) && Objects.equals(dateCreated, note1.dateCreated) && Objects.equals(lastUpdated, note1.lastUpdated) && Objects.equals(relatedNotes, note1.relatedNotes) && Objects.equals(relatedLabels, note1.relatedLabels);
+    }
+
+    public Boolean equalsIgnoreLastUpdate(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Note note1)) return false;
+        return title.equals(note1.title) && Objects.equals(description, note1.description) && note.equals(note1.note) && Objects.equals(dateCreated, note1.dateCreated) && Objects.equals(relatedNotes, note1.relatedNotes) && Objects.equals(relatedLabels, note1.relatedLabels);
     }
 
     @Override
