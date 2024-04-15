@@ -130,7 +130,7 @@ public class NoteController {
         );
     }
 
-    @GetMapping("/relatedLabels")
+    @GetMapping("/relatedLabel")
     @Operation(summary = "Get relatedLabels", description = "Retrieves related labels of note")
     public ResponseEntity<Set<dev.kiyari.note.model.label.ListDto>> getRelatedLabels(
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
@@ -143,8 +143,8 @@ public class NoteController {
         );
     }
 
-    @GetMapping("/relatedNotes")
-    @Operation(summary = "Get relatedNotes", description = "Retrieves related notes of note")
+    @GetMapping("/relatedNote")
+    @Operation(summary = "Get relatedLabels", description = "Retrieves related labels of note")
     public ResponseEntity<Set<ListDto>> getRelatedNotes(
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
             @RequestParam(name = "id") Long id) {

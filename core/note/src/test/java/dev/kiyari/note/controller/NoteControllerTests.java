@@ -239,4 +239,23 @@ class NoteControllerTests {
         assertNotNull(relatedLabels);
         assertEquals(set, relatedLabels);
     }
+
+    @Test
+    public void addRelatedNote() {
+        Long id = 1L;
+        Long noteId = 2L;
+        Note note2 = notes.get(1);
+        Note note = notes.get(0);
+        note.addRelatedNote(note2);
+
+        when(noteService.addRelatedLabel(id, noteId)).thenReturn(note);
+
+        ResponseEntity<ListDto> response = noteController.addRelatedLabel(id,noteId);
+
+        ListDto dto = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assert dto != null;
+        assertNoteFields(dto);
+    }
 }
