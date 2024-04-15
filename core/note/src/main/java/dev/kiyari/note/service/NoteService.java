@@ -6,6 +6,7 @@ import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.model.note.ListDto;
 import dev.kiyari.note.repository.NoteRepository;
 import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
+import dev.kiyari.note.util.exception.NoSuchEntityException;
 import dev.kiyari.note.util.exception.SaveEntityException;
 import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -94,7 +96,7 @@ public class NoteService {
         Note note = read(id);
         note.addRelatedLabel(label);
 
-        if (labelService.isNotePresentInLabelRelatedNotes(note, label)) {
+        if (isLabelPresentsInNoteRelatedLabels(label, note)) {
             throw new EntityAlreadyPresentException("Such label is already present in relatedNotes");
         }
 
@@ -120,5 +122,23 @@ public class NoteService {
         update(note);
 
         return note;
+    }
+
+    public Set<Label> getRelatedLabels(Long id) {
+        Optional<Note> note = noteRepository.findById(id);
+        if (note.isPresent()) {
+            return note.get().getRelatedLabels();
+        }
+
+        throw new NoSuchEntityException("There is no note with such id");
+    }
+
+    public Set<Note> getRelatedNotes(Long id) {
+        Optional<Note> note = noteRepository.findById(id);
+        if (note.isPresent()) {
+            return note.get().getRelatedNotes();
+        }
+
+        throw new NoSuchEntityException("There is no note with such id");
     }
 }

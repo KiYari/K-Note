@@ -1,12 +1,12 @@
 package dev.kiyari.note.model.note;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

@@ -95,12 +95,37 @@ public class NoteController {
             @Parameter(name = "id", description = "ID of note", required = true, example = "5")
             @RequestParam(name = "id") Long id,
 
-            @Parameter(name = "dto", description = "Transferable object that represents Label", required = true)
-            @Schema(implementation = dev.kiyari.note.model.label.ListDto.class)
-            @RequestBody dev.kiyari.note.model.label.ListDto dto) {
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long label_id) {
 
         return ResponseEntity.ok(
-                ListDto.parseObject(noteService.removeRelatedLabel(id, dto))
+                ListDto.parseObject(noteService.removeRelatedLabel(id, label_id))
+        );
+    }
+
+    @GetMapping("/relatedLabels")
+    @Operation(summary = "Get relatedLabels", description = "Retrieves related labels of note")
+    public ResponseEntity<Set<dev.kiyari.note.model.label.ListDto>> getRelatedLabels(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id) {
+        return ResponseEntity.ok(
+                noteService.getRelatedLabels(id)
+                        .stream()
+                        .map(dev.kiyari.note.model.label.ListDto::parseObject)
+                        .collect(Collectors.toSet())
+        );
+    }
+
+    @GetMapping("/relatedNotes")
+    @Operation(summary = "Get relatedNotes", description = "Retrieves related notes of note")
+    public ResponseEntity<Set<ListDto>> getRelatedNotes(
+            @Parameter(name = "id", description = "ID of note", required = true, example = "5")
+            @RequestParam(name = "id") Long id) {
+        return ResponseEntity.ok(
+                noteService.getRelatedNotes(id)
+                        .stream()
+                        .map(ListDto::parseObject)
+                        .collect(Collectors.toSet())
         );
     }
 }

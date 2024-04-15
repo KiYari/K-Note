@@ -54,6 +54,12 @@ class NoteControllerTests {
 
         labels.add(new Label(1L, "Captivating Cosmos", "Explore the wonders of the universe",
                 new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(2L, "Flourishing Flora", "Discover the diversity of plant life",
+                new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(3L, "Mesmerizing Music", "Delve into the world of sound",
+                new HashSet<>(), new HashSet<>()));
     }
 
     private void assertNoteFields(ListDto dto) {
@@ -172,5 +178,45 @@ class NoteControllerTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assert dto != null;
         assertNoteFields(dto);
+    }
+
+    @Test
+    public void getRelatedLabelsTest() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        note.addRelatedLabel(label);
+
+        Set<dev.kiyari.note.model.label.ListDto> set = new HashSet<>();
+        set.add(dev.kiyari.note.model.label.ListDto.parseObject(label));
+
+        when(noteService.getRelatedLabels(id)).thenReturn(note.getRelatedLabels());
+
+        ResponseEntity<Set<dev.kiyari.note.model.label.ListDto>> response = noteController.getRelatedLabels(id);
+        Set<dev.kiyari.note.model.label.ListDto> relatedLabels = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(relatedLabels);
+        assertEquals(set, relatedLabels);
+    }
+
+    @Test
+    public void getRelatedNoteTest() {
+        Long id = 1L;
+        Note note = notes.get(0);
+        Note note2 = notes.get(1);
+        note.addRelatedNote(note2);
+
+        Set<ListDto> set = new HashSet<>();
+        set.add(ListDto.parseObject(note2));
+
+        when(noteService.getRelatedNotes(id)).thenReturn(note.getRelatedNotes());
+
+        ResponseEntity<Set<ListDto>> response = noteController.getRelatedNotes(id);
+        Set<ListDto> relatedLabels = response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(relatedLabels);
+        assertEquals(set, relatedLabels);
     }
 }

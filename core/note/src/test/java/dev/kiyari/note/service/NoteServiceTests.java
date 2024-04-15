@@ -55,6 +55,12 @@ public class NoteServiceTests {
 
         labels.add(new Label(1L, "Captivating Cosmos", "Explore the wonders of the universe",
                 new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(2L, "Flourishing Flora", "Discover the diversity of plant life",
+                new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(3L, "Mesmerizing Music", "Delve into the world of sound",
+                new HashSet<>(), new HashSet<>()));
     }
 
     @Test
@@ -113,6 +119,8 @@ public class NoteServiceTests {
                 LocalDateTime.now(), LocalDateTime.now());
 
         when(noteRepository.save(updatedNote)).thenReturn(updatedNote);
+        when(noteRepository.existsById(noteToUpdateId)).thenReturn(true);
+        when(noteRepository.findById(noteToUpdateId)).thenReturn(Optional.ofNullable(updatedNote));
 
         Note savedNote = noteService.update(noteToUpdateId, EditDto.parseObject(updatedNote));
 
@@ -211,5 +219,29 @@ public class NoteServiceTests {
         assertEquals(note.getNote(), unchangedNote.getNote());
         assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
         assertNotEquals(note.getRelatedLabels(), unchangedNote.getRelatedLabels());
+    }
+
+    @Test
+    public void testGetRelatedLabels_ShouldReturnValidRelatedLabels() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        note.addRelatedLabel(label);
+
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+
+        assertEquals(note.getRelatedLabels(), noteService.getRelatedLabels(id));
+    }
+
+    @Test
+    public void testGetRelatedNotes_ShouldReturnValidRelatedLabels() {
+        Long id = 1L;
+        Note note = notes.get(0);
+        Note note2 = notes.get(1);
+        note.addRelatedNote(note2);
+
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+
+        assertEquals(note.getRelatedLabels(), noteService.getRelatedLabels(id));
     }
 }

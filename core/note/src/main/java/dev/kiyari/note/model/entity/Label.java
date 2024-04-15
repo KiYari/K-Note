@@ -5,7 +5,6 @@ import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.label.ListDto;
 import jakarta.persistence.*;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.Objects;
