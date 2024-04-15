@@ -158,11 +158,12 @@ public class NoteService {
             throw new NoSuchEntityException("There is no such Label in relatedLabels");
         }
 
-        labelService.removeRelatedNote(noteToAdd.getId(), ListDto.parseObject(note));
         note.removeRelatedNote(noteToAdd);
-        update(note);
+        noteToAdd.removeRelatedNote(note);
 
-        return note;
+        update(noteToAdd);
+
+        return update(note);
     }
 
     public Set<Label> getRelatedLabels(Long id) {

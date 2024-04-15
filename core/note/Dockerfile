@@ -6,6 +6,6 @@ COPY target/note-1.0.0.jar /app
 
 ENV POSTGRES_HOST postgres
 
-EXPOSE 8080
+EXPOSE 3443
 
 ENTRYPOINT ["java", "-jar", "note-1.0.0.jar"]
