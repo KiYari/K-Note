@@ -81,7 +81,7 @@ public class LabelServiceTests {
 
     @Test
     public void testGetAllLabels_ReturnsListOfLabels() throws Exception {
-        Set<Label> expectedLabels = new LinkedHashSet<>();
+        List<Label> expectedLabels = new ArrayList<>();
         expectedLabels.add(labels.get(0));
         expectedLabels.add(labels.get(1));
         when(labelRepository.findAll()).thenReturn((List<Label>) expectedLabels);
@@ -182,9 +182,14 @@ public class LabelServiceTests {
     @Test
     public void testAddNewRelatedNoteShouldReturnTrue() {
         Label label = labels.get(0);
-        Note note = notes.get(0);
 
-        when(labelRepository.findById(1L)).thenReturn(Optional.ofNullable(label));
+        Note note = notes.get(0);
+        label.addRelatedNote(note);
+
+        when(labelRepository.findById(1L)).thenReturn(Optional.of(label));
+        when(labelRepository.existsById(1L)).thenReturn(true);
+        assert label != null;
+        when(labelRepository.save(label)).thenReturn(label);
 
         assertTrue(labelService.addRelatedNote(1L, ListDto.parseObject(note)));
     }

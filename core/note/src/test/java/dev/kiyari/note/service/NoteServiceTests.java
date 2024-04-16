@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,6 +56,12 @@ public class NoteServiceTests {
                 LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1)));
 
         labels.add(new Label(1L, "Captivating Cosmos", "Explore the wonders of the universe",
+                new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(2L, "Flourishing Flora", "Discover the diversity of plant life",
+                new HashSet<>(), new HashSet<>()));
+
+        labels.add(new Label(3L, "Mesmerizing Music", "Delve into the world of sound",
                 new HashSet<>(), new HashSet<>()));
     }
 
@@ -114,6 +121,8 @@ public class NoteServiceTests {
                 LocalDateTime.now(), LocalDateTime.now());
 
         when(noteRepository.save(updatedNote)).thenReturn(updatedNote);
+        when(noteRepository.existsById(noteToUpdateId)).thenReturn(true);
+        when(noteRepository.findById(noteToUpdateId)).thenReturn(Optional.ofNullable(updatedNote));
 
         Note savedNote = noteService.update(noteToUpdateId, EditDto.parseObject(updatedNote));
 
@@ -161,7 +170,7 @@ public class NoteServiceTests {
     }
 
     @Test
-    public void testIsNotePresentInRelatedNotes() {
+    public void testIsLabelPresentInRelatedLabels() {
         Label label = labels.get(0);
         Note note = new Note();
 
@@ -171,21 +180,31 @@ public class NoteServiceTests {
     }
 
     @Test
+    public void testIsNotePresentInRelatedNotes() {
+        Note relatedNote = notes.get(1);
+        Note note = notes.get(0);
+
+        note.addRelatedNote(relatedNote);
+
+        assertTrue(noteService.isNotePresentsInNoteRelatedNotes(relatedNote, note));
+    }
+
+    @Test
     public void testRemoveRelatedLabel_ShouldReturnNote() {
         Long id = 1L;
+        Long labelId = 1L;
         Label label = labels.get(0);
         Note note = notes.get(0);
         Note unchangedNote = note.clone();
         note.addRelatedLabel(label);
         label.addRelatedNote(note);
 
-
-        when(labelService.existsByTitle(label.getTitle())).thenReturn(true);
         when(labelService.existsById(id)).thenReturn(true);
         when(noteRepository.findById(id)).thenReturn(Optional.of(note));
         when(noteRepository.existsById(id)).thenReturn(true);
+        when(labelService.read(labelId)).thenReturn(label);
 
-        noteService.removeRelatedLabel(id, ListDto.parseObject(label));
+        noteService.removeRelatedLabel(id, labelId);
 
         assertEquals(note.getId(), unchangedNote.getId());
         assertEquals(note.getTitle(), unchangedNote.getTitle());
@@ -236,6 +255,98 @@ public class NoteServiceTests {
         verify(labelService).existsByTitle(label.getTitle());
         verify(noteRepository).findById(noteId);
         verify(noteRepository).save(note);
+    }
+
+
+    public void testRemoveRelatedNote_ShouldReturnNote() {
+        Long id = 1L;
+        Long note2Id = 2L;
+        Note noteToAdd = notes.get(1);
+        Note note = notes.get(0);
+        Note unchangedNote = note.clone();
+        note.addRelatedNote(noteToAdd);
+        noteToAdd.addRelatedNote(note);
+
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+        when(noteRepository.existsById(id)).thenReturn(true);
+        when(noteRepository.findById(note2Id)).thenReturn(Optional.of(noteToAdd));
+        when(noteRepository.existsById(note2Id)).thenReturn(true);
+
+        noteService.removeRelatedNote(id, note2Id);
+
+        assertEquals(note.getId(), unchangedNote.getId());
+        assertEquals(note.getTitle(), unchangedNote.getTitle());
+        assertEquals(note.getDescription(), unchangedNote.getDescription());
+        assertEquals(note.getNote(), unchangedNote.getNote());
+        assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
+        assertEquals(note.getRelatedLabels(), unchangedNote.getRelatedLabels());
+
+        assertFalse(note.getRelatedLabels().contains(noteToAdd));
+    }
+
+    @Test
+    public void testRemoveRelatedNote_ShouldDifferFromUnchanged() {
+        Note NoteToRemove = notes.get(1);
+        Note note = notes.get(0);
+        Note unchangedNote = note.clone();
+        note.addRelatedNote(NoteToRemove);
+        NoteToRemove.addRelatedNote(note);
+
+        assertEquals(note.getId(), unchangedNote.getId());
+        assertEquals(note.getTitle(), unchangedNote.getTitle());
+        assertEquals(note.getDescription(), unchangedNote.getDescription());
+        assertEquals(note.getNote(), unchangedNote.getNote());
+        assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
+        assertNotEquals(note.getRelatedNotes(), unchangedNote.getRelatedNotes());
+    }
+
+    @Test
+    public void testGetRelatedLabels_ShouldReturnValidRelatedLabels() {
+        Long id = 1L;
+        Label label = labels.get(0);
+        Note note = notes.get(0);
+        note.addRelatedLabel(label);
+
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+
+        assertEquals(note.getRelatedLabels(), noteService.getRelatedLabels(id));
+    }
+
+    @Test
+    public void testGetRelatedNotes_ShouldReturnValidRelatedNotes() {
+        Long id = 1L;
+        Note note = notes.get(0);
+        Note note2 = notes.get(1);
+        note.addRelatedNote(note2);
+
+        when(noteRepository.findById(id)).thenReturn(Optional.of(note));
+
+        assertEquals(note.getRelatedLabels(), noteService.getRelatedLabels(id));
+    }
+
+    @Test
+    public void testAddRelatedNotes_ShouldReturnValidNote() {
+        Long id = 1L;
+        Long addId = 2L;
+        Note note = notes.get(0);
+        Note noteToAdd = notes.get(1);
+
+        when(noteRepository.existsById(id)).thenReturn(true);
+        when(noteRepository.existsById(addId)).thenReturn(true);
+        when(noteRepository.findById(id)).thenReturn(Optional.ofNullable(note));
+        when(noteRepository.findById(addId)).thenReturn(Optional.ofNullable(noteToAdd));
+
+        noteService.addRelatedNote(id, addId);
+
+        assert note != null;
+        System.out.println(note.getRelatedNotes());
+        assertTrue(note.getRelatedNotes()
+                .stream().toList()
+                .get(0).equalsIgnoreLastUpdate(noteToAdd));
+        assert noteToAdd != null;
+        assertTrue(noteToAdd.getRelatedNotes()
+                .stream().toList()
+                .get(0).equalsIgnoreLastUpdate(note));
     }
 
 }
