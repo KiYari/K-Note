@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -212,4 +213,29 @@ public class NoteServiceTests {
         assertEquals(note.getDateCreated(), unchangedNote.getDateCreated());
         assertNotEquals(note.getRelatedLabels(), unchangedNote.getRelatedLabels());
     }
+
+    @Test
+    public void testAddRelatedLabel() {
+        // Arrange
+        Long noteId = 1L;
+        Label label = new Label(2L, "New Label", "This is a new label", new HashSet<>(), new HashSet<>());
+        Note note = new Note(noteId, "Test Note", "This is a test note", "", new HashSet<>(), new HashSet<>(), LocalDateTime.now(), LocalDateTime.now());
+        when(labelService.existsById(label.getId())).thenReturn(true);
+        when(labelService.existsByTitle(label.getTitle())).thenReturn(true);
+        when(noteRepository.findById(noteId)).thenReturn(Optional.of(note));
+        when(noteRepository.save(note)).thenReturn(note);
+
+        // Act
+        Note updatedNote = noteService.addRelatedLabel(noteId, ListDto.parseObject(label));
+
+        // Assert
+        assertNotNull(updatedNote);
+        assertEquals(noteId, updatedNote.getId());
+        assertTrue(updatedNote.getRelatedLabels().contains(label));
+        verify(labelService).existsById(label.getId());
+        verify(labelService).existsByTitle(label.getTitle());
+        verify(noteRepository).findById(noteId);
+        verify(noteRepository).save(note);
+    }
+
 }

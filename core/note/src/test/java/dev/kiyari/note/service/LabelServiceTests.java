@@ -84,7 +84,7 @@ public class LabelServiceTests {
         Set<Label> expectedLabels = new LinkedHashSet<>();
         expectedLabels.add(labels.get(0));
         expectedLabels.add(labels.get(1));
-        when(labelRepository.findAll()).thenReturn(expectedLabels);
+        when(labelRepository.findAll()).thenReturn((List<Label>) expectedLabels);
 
         Set<Label> actualLabels = labelService.getAll();
 
