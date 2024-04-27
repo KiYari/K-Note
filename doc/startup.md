@@ -1,5 +1,6 @@
 # Startup guide
 
+
 ##For Windows:
 1. Install wsl:
 	open PowerShell as administrator and type: wsl --install
@@ -8,6 +9,7 @@
 	go to https://docs.docker.com/desktop/install/windows-install/ and install docker
 	
 3. Use startup.sh or startup-dedicated.sh for dedicated startup.
+
 
 ##For Linux:
 1. Install docker:
