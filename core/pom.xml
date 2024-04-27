@@ -21,6 +21,9 @@
 		<module>
 			yad-integration
 		</module>
+		<module>
+			profile
+		</module>
 	</modules>
 
 	<packaging>
@@ -31,6 +34,7 @@
 		<java.version>17</java.version>
 		<note.version>1.0.0</note.version>
 		<yad-integration.version>1.0.0</yad-integration.version>
+		<profile.version>1.0.0</profile.version>
 	</properties>
 
 	<build>
@@ -46,6 +50,11 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
