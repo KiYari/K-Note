@@ -1,6 +1,7 @@
 package dev.kiyari.profile.model.entity;
 
 import dev.kiyari.note.model.BasicEntity;
+import dev.kiyari.profile.model.profile.EditDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class Profile extends BasicEntity {
     }
 
     @Column(name = "username")
+    @Setter
     private String username;
 
     private LocalDateTime dateCreated;
@@ -33,4 +35,13 @@ public class Profile extends BasicEntity {
     @CollectionTable(name = "profile_oauth", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name = "oauth")
     private Set<OAuthResource> resources;
+
+    public static Profile parseEditDto(EditDto dto) {
+        return Profile.builder()
+                .username(dto.getUsername())
+                .dateCreated(dto.getDateCreated())
+                .lastUpdated(dto.getLastUpdated())
+                .resources(dto.getResources())
+                .build();
+    }
 }
