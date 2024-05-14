@@ -49,4 +49,16 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="alter_profile_table_1" author="termrdz@gmail.com">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="profile"/>
+        </preConditions>
+
+        <addColumn tableName="profile">
+            <column name="date_created" type="timestamp"/>
+            <column name="last_updated" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

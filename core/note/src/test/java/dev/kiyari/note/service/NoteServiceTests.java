@@ -2,9 +2,7 @@ package dev.kiyari.note.service;
 
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
-import dev.kiyari.note.model.label.ListDto;
 import dev.kiyari.note.model.note.EditDto;
-import dev.kiyari.note.repository.LabelRepository;
 import dev.kiyari.note.repository.NoteRepository;
 import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,10 +17,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class NoteServiceTests {
