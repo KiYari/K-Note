@@ -1,6 +1,6 @@
 version: "3.9"
 
-services:      
+services:
   note:
     image: 'note:latest'
     depends_on:
@@ -22,8 +22,8 @@ services:
       - '5432:5432'
     volumes:
       - ~/postgres124:/var/lib/postgresql/data
-    
-      
+
+
   rabbitmq:
     image: 'rabbitmq:latest'
     environment:
@@ -31,3 +31,12 @@ services:
       - 'RABBITMQ_DEFAULT_USER=admin'
     ports:
       - "5672:5672"
+
+  ui:
+    image: 'ui:latest'
+    ports:
+      - "3000:3000" # Map the port your React app runs on inside the container to a host port
+    depends_on:
+      - note
+      - postgres
+      - rabbitmq
