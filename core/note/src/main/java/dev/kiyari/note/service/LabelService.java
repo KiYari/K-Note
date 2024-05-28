@@ -1,18 +1,17 @@
 package dev.kiyari.note.service;
 
+import dev.kiyari.base.exception.EntityAlreadyPresentException;
+import dev.kiyari.base.exception.NoSuchEntityException;
+import dev.kiyari.base.exception.SaveEntityException;
+import dev.kiyari.base.exception.UnexpectedException;
 import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.repository.LabelRepository;
-import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
-import dev.kiyari.note.util.exception.NoSuchEntityException;
-import dev.kiyari.note.util.exception.SaveEntityException;
-import dev.kiyari.note.util.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

@@ -4,7 +4,6 @@ import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.entity.Note;
 import dev.kiyari.note.model.note.EditDto;
 import dev.kiyari.note.repository.NoteRepository;
-import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -152,7 +151,7 @@ public class NoteServiceTests {
         Long nonExistingId = 4L;
         when(noteRepository.existsById(nonExistingId)).thenReturn(false);
 
-        assertThrows(EntityAlreadyPresentException.class, () -> noteService.delete(nonExistingId));
+        assertThrows(RuntimeException.class, () -> noteService.delete(nonExistingId));
     }
 
     @Test

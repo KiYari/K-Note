@@ -1,6 +1,6 @@
 package dev.kiyari.note.model.entity;
 
-import dev.kiyari.note.model.BasicEntity;
+import dev.kiyari.base.model.BasicEntity;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.label.ListDto;
 import jakarta.persistence.*;
