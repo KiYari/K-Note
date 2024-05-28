@@ -68,6 +68,9 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+
+					<mainClass>dev.kiyari.profile.ProfileApplication</mainClass>
+					<layout>JAR</layout>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -12,6 +12,17 @@ services:
       - 'POSTGRES_HOST: localhost'
       - 'RABBIT_HOST: localhost'
 
+  profile:
+    image: 'profile:latest'
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - 3444:3444
+    environment:
+      - 'POSTGRES_HOST: localhost'
+      - 'RABBIT_HOST: localhost'
+
   postgres:
     image: 'postgres:14.2'
     environment:
@@ -35,8 +46,9 @@ services:
   ui:
     image: 'ui:latest'
     ports:
-      - "3000:3000" # Map the port your React app runs on inside the container to a host port
+      - "3000:3000"
     depends_on:
       - note
+      - profile
       - postgres
       - rabbitmq

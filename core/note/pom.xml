@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>dev.kiyari</groupId>
@@ -69,14 +70,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>local</id>
-			<name>Local Repo</name>
-			<url>file:C:/Users/win/.m2/repository</url>
-		</repository>
-	</repositories>
 
 
 </project>
