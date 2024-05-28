@@ -1,6 +1,7 @@
 package dev.kiyari.profile.model.entity;
 
-import dev.kiyari.base.model.BasicEntity;
+
+import dev.kiyari.note.model.BasicEntity;
 import dev.kiyari.profile.model.profile.EditDto;
 import jakarta.persistence.*;
 import lombok.*;
