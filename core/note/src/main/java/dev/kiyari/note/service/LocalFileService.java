@@ -1,6 +1,6 @@
 package dev.kiyari.note.service;
 
-import dev.kiyari.note.util.exception.UnexpectedException;
+import dev.kiyari.base.exception.UnexpectedException;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
