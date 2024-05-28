@@ -1,11 +1,13 @@
 package dev.kiyari.profile.service;
 
-import dev.kiyari.base.exception.EntityAlreadyPresentException;
-import dev.kiyari.base.exception.SaveEntityException;
-import dev.kiyari.base.exception.UnexpectedException;
+import dev.kiyari.note.model.entity.Note;
+import dev.kiyari.note.util.exception.EntityAlreadyPresentException;
+import dev.kiyari.note.util.exception.SaveEntityException;
+import dev.kiyari.note.util.exception.UnexpectedException;
 import dev.kiyari.profile.model.entity.Profile;
 import dev.kiyari.profile.model.profile.EditDto;
 import dev.kiyari.profile.repository.ProfileRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
