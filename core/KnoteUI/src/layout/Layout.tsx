@@ -1,4 +1,3 @@
-'use client'
 import {FC, useState} from "react";
 import LayoutProps from "@/layout/layout.props";
 import Header from "@/layout/header/Header";
@@ -6,9 +5,8 @@ import Sider from "@/layout/sider/Sider";
 import styles from "./layout.module.css";
 import BasicComponent from "@/component/basicComponent/BasicComponent";
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+const Layout: FC<LayoutProps> = ({ children , currentSiderWidthPercentage=15}) => {
     const headerHeight: number = 100;
-    const [currentSiderWidthPercentage, setCurrentSiderWidthPercentage] = useState(15);
 
     return (
         <BasicComponent>
@@ -18,7 +16,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
             </BasicComponent>
 
             <BasicComponent style={{width: '100%-' + currentSiderWidthPercentage + '%', height: 'calc(100%-' + headerHeight + 'px)',
-                left: currentSiderWidthPercentage + '%', top: 0}} className={styles.contentContainer}>
+                left: currentSiderWidthPercentage + '%', top: headerHeight}} className={styles.contentContainer}>
                 {children}
             </BasicComponent>
         </BasicComponent>
