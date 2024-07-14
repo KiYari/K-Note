@@ -1,0 +1,9 @@
+.headerSiderContainer {
+    width: 100%;
+    display: flex;
+    position: sticky;
+}
+
+.contentContainer {
+    position: absolute;
+}
