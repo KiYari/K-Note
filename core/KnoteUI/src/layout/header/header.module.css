@@ -1,4 +1,25 @@
 .main {
     width: 100%;
     background: #ce4545;
+    position: sticky;
+    transition: all 1s ease-in-out;
+}
+
+.profileHolder {
+    width: 80px;
+    position: absolute;
+    display: flex;
+    right: 50px;
+    top: 10px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease-in-out;
+}
+
+.profileHolder:hover {
+    cursor: pointer;
+    border-radius: 12%;
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+    transition: all 0.25s ease-in-out;
 }

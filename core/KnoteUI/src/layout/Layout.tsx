@@ -9,7 +9,7 @@ const Layout: FC<LayoutProps> = ({ children , currentSiderWidthPercentage=15}) =
     const headerHeight: number = 100;
 
     return (
-        <BasicComponent>
+        <BasicComponent style={{height: 'inherit'}}>
             <BasicComponent className={styles.headerSiderContainer}>
                 <Sider style={{width: currentSiderWidthPercentage + '%'}}/>
                 <Header style={{height: headerHeight}}/>

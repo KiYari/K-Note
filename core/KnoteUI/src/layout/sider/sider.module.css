@@ -1,4 +1,6 @@
 .main {
     height: 100vh;
     background: #687ede;
+    position: sticky;
+    transition: all 1s ease-in-out;
 }

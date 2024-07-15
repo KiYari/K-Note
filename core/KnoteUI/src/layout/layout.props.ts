@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
+import BasicProps from "@/component/basicComponent/basicProps";
 
-export default interface LayoutProps {
-    children: ReactNode
+export default interface LayoutProps extends BasicProps{
     currentSiderWidthPercentage: number
 }
