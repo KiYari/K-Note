@@ -2,5 +2,5 @@
     height: 100vh;
     background: #687ede;
     position: sticky;
-    transition: all 1s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }

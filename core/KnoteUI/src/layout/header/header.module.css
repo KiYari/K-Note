@@ -2,14 +2,14 @@
     width: 100%;
     background: #ce4545;
     position: sticky;
-    transition: all 1s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 
 .homeHolder {
-    width: 80px;
+    width: 120px;
     position: absolute;
     display: flex;
-    left: 50px;
+    left: 150px;
     top: 10px;
     height: 80px;
     align-items: center;
@@ -27,7 +27,7 @@
     width: 80px;
     position: absolute;
     display: flex;
-    right: 50px;
+    right: 100px;
     top: 10px;
     height: 80px;
     align-items: center;
@@ -40,4 +40,13 @@
     border-radius: 12%;
     box-shadow: 0 0 11px rgba(33,33,33,.2);
     transition: all 0.25s ease-in-out;
+}
+
+.siderClosable {
+    top: 15px;
+    left: 25px;
+}
+
+.siderClosableIcon {
+    font-size: 48px !important;
 }

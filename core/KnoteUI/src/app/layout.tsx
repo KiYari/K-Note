@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} style={{height: 'inherit'}}>
-      <Layout currentSiderWidthPercentage={15}>
+      <Layout>
         {children}
       </Layout>
       </body>
