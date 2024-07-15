@@ -1,3 +1,5 @@
+'use client'
+
 import {FC, useState} from "react";
 import LayoutProps from "@/layout/layout.props";
 import Header from "@/layout/header/Header";
@@ -5,14 +7,19 @@ import Sider from "@/layout/sider/Sider";
 import styles from "./layout.module.css";
 import BasicComponent from "@/component/basicComponent/BasicComponent";
 
-const Layout: FC<LayoutProps> = ({ children , currentSiderWidthPercentage=15}) => {
+const Layout: FC<LayoutProps> = ({ children }) => {
     const headerHeight: number = 100;
+    const [currentSiderWidthPercentage, setCurrentSiderWidthPercentage] = useState(15);
+
+    const handleSidelSwitch = () => {
+        setCurrentSiderWidthPercentage(currentSiderWidthPercentage === 0 ? 15 : 0);
+    }
 
     return (
         <BasicComponent style={{height: 'inherit'}}>
             <BasicComponent className={styles.headerSiderContainer}>
                 <Sider style={{width: currentSiderWidthPercentage + '%'}}/>
-                <Header style={{height: headerHeight}}/>
+                <Header style={{height: headerHeight}} onSiderSwitchClick={handleSidelSwitch}/>
             </BasicComponent>
 
             <BasicComponent style={{width: '100%-' + currentSiderWidthPercentage + '%', height: 'calc(100%-' + headerHeight + 'px)',
