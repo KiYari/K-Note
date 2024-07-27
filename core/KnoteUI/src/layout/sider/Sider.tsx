@@ -2,12 +2,28 @@ import {FC} from "react";
 import SiderProps from "@/layout/sider/sider.props";
 import styles from "./sider.module.css"
 import BasicComponent from "@/component/basicComponent/BasicComponent";
+import {MenuList} from "@mui/material";
+import SiderItem from "@/layout/sider/siderItem/SiderItem";
 
 
-const Sider:FC<SiderProps> = ({ style  , ...props }) => {
+const Sider:FC<SiderProps> = ({ style  , headerHeight, ...props }) => {
+
     return(
         <BasicComponent className={styles.main} style={style} {...props}>
-            IM_A_SIDER)))
+            <MenuList dense style={{top: headerHeight}}>
+                <SiderItem>
+                    abc
+                </SiderItem>
+                <SiderItem>
+                    abc2323
+                </SiderItem>
+                <SiderItem>
+                    abc4444
+                </SiderItem>
+                <SiderItem>
+                    abc56611
+                </SiderItem>
+            </MenuList>
         </BasicComponent>
     )
 }
