@@ -11,15 +11,15 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     const headerHeight: number = 100;
     const [currentSiderWidthPercentage, setCurrentSiderWidthPercentage] = useState(15);
 
-    const handleSidelSwitch = () => {
+    const handleSiderSwitch = () => {
         setCurrentSiderWidthPercentage(currentSiderWidthPercentage === 0 ? 15 : 0);
     }
 
     return (
         <BasicComponent style={{height: 'inherit'}}>
             <BasicComponent className={styles.headerSiderContainer}>
-                <Sider style={{width: currentSiderWidthPercentage + '%'}}/>
-                <Header style={{height: headerHeight}} onSiderSwitchClick={handleSidelSwitch}/>
+                <Sider style={{width: currentSiderWidthPercentage + '%'}} headerHeight={headerHeight}/>
+                <Header style={{height: headerHeight}} onSiderSwitchClick={handleSiderSwitch}/>
             </BasicComponent>
 
             <BasicComponent style={{width: '100%-' + currentSiderWidthPercentage + '%', height: 'calc(100%-' + headerHeight + 'px)',
