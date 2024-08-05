@@ -14,7 +14,7 @@ const Sider:FC<SiderProps> = ({ style  , headerHeight, isSiderOpened, siderWidth
         ...style
     }
     return(
-        <BasicComponent className={styles.main} style={combinedStyle} {...props}>
+        <BasicComponent className={styles.main} style={combinedStyle} {...props}
             <MenuList dense style={{top: headerHeight}}>
                 <SiderItem>
                     abc
