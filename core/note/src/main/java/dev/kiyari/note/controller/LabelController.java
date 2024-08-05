@@ -1,5 +1,6 @@
 package dev.kiyari.note.controller;
 
+import dev.kiyari.note.model.entity.Label;
 import dev.kiyari.note.model.label.EditDto;
 import dev.kiyari.note.model.label.ListDto;
 import dev.kiyari.note.service.LabelService;

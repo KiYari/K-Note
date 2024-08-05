@@ -6,10 +6,15 @@ import {MenuList} from "@mui/material";
 import SiderItem from "@/layout/sider/siderItem/SiderItem";
 
 
-const Sider:FC<SiderProps> = ({ style  , headerHeight, ...props }) => {
+const Sider:FC<SiderProps> = ({ style  , headerHeight, isSiderOpened, siderWidth,  ...props }) => {
 
+    const combinedStyle = {
+        width: siderWidth,
+        left: isSiderOpened ? 0 : -siderWidth + '%',
+        ...style
+    }
     return(
-        <BasicComponent className={styles.main} style={style} {...props}>
+        <BasicComponent className={styles.main} style={combinedStyle} {...props}
             <MenuList dense style={{top: headerHeight}}>
                 <SiderItem>
                     abc
