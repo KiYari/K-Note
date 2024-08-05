@@ -9,21 +9,22 @@ import BasicComponent from "@/component/basicComponent/BasicComponent";
 
 const Layout: FC<LayoutProps> = ({ children }) => {
     const headerHeight: number = 100;
-    const [currentSiderWidthPercentage, setCurrentSiderWidthPercentage] = useState(15);
+    const SIDER_WIDTH = 250;
+    const [isSiderOpened, setIsSiderOpened] = useState(true);
 
     const handleSiderSwitch = () => {
-        setCurrentSiderWidthPercentage(currentSiderWidthPercentage === 0 ? 15 : 0);
+        setIsSiderOpened(!isSiderOpened);
     }
 
     return (
-        <BasicComponent style={{height: 'inherit'}}>
+        <BasicComponent style={{height: 'inherit', overflowX: 'clip'}}>
             <BasicComponent className={styles.headerSiderContainer}>
-                <Sider style={{width: currentSiderWidthPercentage + '%'}} headerHeight={headerHeight}/>
+                <Sider siderWidth={SIDER_WIDTH} isSiderOpened={isSiderOpened} headerHeight={headerHeight}/>
                 <Header style={{height: headerHeight}} onSiderSwitchClick={handleSiderSwitch}/>
             </BasicComponent>
 
-            <BasicComponent style={{width: '100%-' + currentSiderWidthPercentage + '%', height: 'calc(100%-' + headerHeight + 'px)',
-                left: currentSiderWidthPercentage + '%', top: headerHeight}} className={styles.contentContainer}>
+            <BasicComponent style={{height: 'calc(100%-' + headerHeight + 'px)',
+                left: isSiderOpened ? SIDER_WIDTH + '%' : 0, top: headerHeight}} className={styles.contentContainer}>
                 {children}
             </BasicComponent>
         </BasicComponent>

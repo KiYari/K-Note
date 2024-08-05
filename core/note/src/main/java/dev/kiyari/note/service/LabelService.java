@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -117,5 +118,9 @@ public class LabelService {
 
         update(label);
         return true;
+    }
+
+    public Set<Label> getRelatedLabels(Long id) {
+        return labelRepository.findById(id).orElseThrow().getRelatedLabels();
     }
 }
