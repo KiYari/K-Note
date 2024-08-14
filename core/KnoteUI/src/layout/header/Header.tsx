@@ -3,30 +3,31 @@ import HeaderProps from "@/layout/header/header.props";
 import styles from "./header.module.css";
 import BasicComponent from "@/component/basicComponent/BasicComponent";
 import Link from "next/link";
-import {IconButton, Typography} from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import {Button, Typography} from "antd";
+import {MenuOutlined} from "@ant-design/icons";
+
+const { Title } = Typography;
 
 const Header:FC<HeaderProps> = ({className, style, onSiderSwitchClick, ...props}) => {
     return(
         <BasicComponent className={`${styles.main} ${className}`} style={style} {...props}>
-            <IconButton size='large' className={styles.siderClosable} onClick={onSiderSwitchClick}>
-                <MenuIcon className={styles.siderClosableIcon}/>
-            </IconButton>
+            <Button size='large' className={styles.siderClosable} onClick={onSiderSwitchClick} icon={<MenuOutlined className={styles.siderClosableIcon}/>}>
+            </Button>
 
             <Link href={'/'} className={styles.homeHolder}>
-                <Typography variant="h1">
+                <Title level={1}>
                     K
-                </Typography>
+                </Title>
 
-                <Typography variant='h5'>
+                <Title level={5}>
                     Note
-                </Typography>
+                </Title>
             </Link>
 
             <Link href={'/profile'} className={styles.profileHolder}>
-                <Typography variant='h5'>
+                <Title level={5}>
                     profile
-                </Typography>
+                </Title>
             </Link>
         </BasicComponent>
     )
