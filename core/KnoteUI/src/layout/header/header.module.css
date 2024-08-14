@@ -45,6 +45,13 @@
 .siderClosable {
     top: 15px;
     left: 25px;
+    background: #ce4545;
+    border-color: #ce4545;
+}
+
+.siderClosable:hover {
+    background: #ce4545 !important;
+    border-color: #ce4545 !important;
 }
 
 .siderClosableIcon {

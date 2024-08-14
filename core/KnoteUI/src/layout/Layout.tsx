@@ -19,12 +19,12 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     return (
         <BasicComponent style={{height: 'inherit', overflowX: 'clip'}}>
             <BasicComponent className={styles.headerSiderContainer}>
-                <Sider siderWidth={SIDER_WIDTH} isSiderOpened={isSiderOpened} headerHeight={headerHeight}/>
+                <Sider siderWidth={SIDER_WIDTH} isSiderOpened={isSiderOpened} headerHeight={headerHeight} style={{top: 100, height: 'calc(100vh - ' + headerHeight + 'px)'}}/>
                 <Header style={{height: headerHeight}} onSiderSwitchClick={handleSiderSwitch}/>
             </BasicComponent>
 
-            <BasicComponent style={{height: 'calc(100%-' + headerHeight + 'px)',
-                left: isSiderOpened ? SIDER_WIDTH + '%' : 0, top: headerHeight}} className={styles.contentContainer}>
+            <BasicComponent style={{height: 'calc(100vh-' + headerHeight + 'px)',
+                left: isSiderOpened ? SIDER_WIDTH : 0, top: headerHeight}} className={styles.contentContainer}>
                 {children}
             </BasicComponent>
         </BasicComponent>
